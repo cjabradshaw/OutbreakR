@@ -77,21 +77,21 @@ colnames(init.dat) <- c("ind","sex","age","dis")
 # disease parameters
 encounter.rate <- 5 # individuals per day
 prob.never.S <- 0.05 # probability pre-susceptible never becomes susceptible (permanent immunity)
-min.tim.b.ind.S <- 1 # minimum time before an individual becomes susceptible
-max.tim.b.ind.S <- 5 # maximum time before an individual becomes susceptible
-contact.rate <- 0.1 # proportion of the population an exposed/infected individual encounters/day
-daily.trans.pr <- 0.27 # daily transmission probability
+min.tim.b.ind.S <- 10 # minimum time before an individual becomes susceptible
+max.tim.b.ind.S <- 100 # maximum time before an individual becomes susceptible
+contact.rate <- 0.0001 # proportion of the population an exposed/infected individual encounters/day
+daily.trans.pr <- 0.00027 # daily transmission probability
 out.dis.pr.trans <- 0.0027 # outside disease source probabilty of transmission
 min.lat.inc.E <- 4 # minimum (days) incubation (latent) period of infection for exposed individuals
-max.lat.inc.E <- 20 # maximum (days) incubation (latent) period of infection for exposed individuals
+max.lat.inc.E <- 200 # maximum (days) incubation (latent) period of infection for exposed individuals
 prop.I.remain <- 0.425 # proportion of infected individuals remaining so indefinitely
-min.tim.rem.I <- 60 # minimum number of days an animal can remain infectious
+min.tim.rem.I <- 100 # minimum number of days an animal can remain infectious
 max.tim.rem.I <- 17*365 # maximum number of days an animal can remain infectious
-pr.R <- 0.01 # probability of recovery and subsequent resistance after the minimum time being infectious 
-pr.ret.S <- 0.9 # probability of returning to the susceptible state after recovery (assuming those not returning to susceptible are pre-susceptible)
-pr.R.perm.imm <- 0.01 # proportion of recovered individuals acquiring permanent immunity
+pr.R <- 0.1 # probability of recovery and subsequent resistance after the minimum time being infectious 
+pr.ret.S <- 0.99 # probability of returning to the susceptible state after recovery (assuming those not returning to susceptible are pre-susceptible)
+pr.R.perm.imm <- 0.001 # proportion of recovered individuals acquiring permanent immunity
 min.tim.res <- 20 # minimum number of days resistant
-max.tim.res <- 60 # maximum number of days resistant
+max.tim.res <- 5*365 # maximum number of days resistant
 
 
 ## transmission state projection matrix
@@ -262,26 +262,32 @@ if (length(R.end.before > 0)) {
   S.return.dat <- endR.before[endR.before[,1] %in% S.return,]
   P.return <- endR.before[!(endR.before[,1] %in% S.return),1] # which become pre-susceptible?
   P.return.dat <- endR.before[!(endR.before[,1] %in% S.return),]
+if (dim(S.return.dat)[1] > 0) {
   for (q in 1:length(S.return)) {
     proj.dat[S.return.dat[q,1], (S.return.dat[q,2]+1)] <- "S"
     proj.dat[S.return.dat[q,1], (S.return.dat[q,2]+2):dim(proj.dat)[2]] <- 0
+} # end if
   } # end q loop
-  for (p in 1:length(P.return)) {
-    proj.dat[P.return.dat[p,1], (P.return.dat[p,2]+1)] <- "P"
-    proj.dat[P.return.dat[p,1], (P.return.dat[p,2]+2):dim(proj.dat)[2]] <- 0
-  } # end p loop
+  if (length(P.return) > 0) {
+    for (p in 1:length(P.return)) {
+      proj.dat[P.return.dat[p,1], (P.return.dat[p,2]+1)] <- "P"
+      proj.dat[P.return.dat[p,1], (P.return.dat[p,2]+2):dim(proj.dat)[2]] <- 0
+    } # end p loop
+  } # end if
 } # end if
 
 
 # do any newly pre-susceptible individuals post-recovery become re-susceptible?
-P.new.dur <- round(runif(length(P.return), min.tim.b.ind.S, max.tim.b.ind.S), 0)
-for (p in 1:length(P.return)) {
-  if ((P.return.dat[p,2]+1+P.new.dur[p]) <= dim(proj.dat)[2]) {
-    proj.dat[P.return.dat[p,1], (P.return.dat[p,2]+1):(P.return.dat[p,2]+1+P.new.dur[p])] <- "S"
-    proj.dat[P.return.dat[p,1], (P.return.dat[p,2]+2+P.new.dur[p]):dim(proj.dat)[2]] <- 0} # end if
-  if ((P.return.dat[p,2]+1+P.new.dur[p]) > dim(proj.dat)[2]) {
-    proj.dat[P.return.dat[p,1], (P.return.dat[p,2]+1):dim(proj.dat)[2]] <- "P"} # end if
-} # end p loop
+if (length(P.return) > 0) {
+  P.new.dur <- round(runif(length(P.return), min.tim.b.ind.S, max.tim.b.ind.S), 0)
+  for (p in 1:length(P.return)) {
+    if ((P.return.dat[p,2]+1+P.new.dur[p]) <= dim(proj.dat)[2]) {
+      proj.dat[P.return.dat[p,1], (P.return.dat[p,2]+1):(P.return.dat[p,2]+1+P.new.dur[p])] <- "S"
+      proj.dat[P.return.dat[p,1], (P.return.dat[p,2]+2+P.new.dur[p]):dim(proj.dat)[2]] <- 0} # end if
+    if ((P.return.dat[p,2]+1+P.new.dur[p]) > dim(proj.dat)[2]) {
+      proj.dat[P.return.dat[p,1], (P.return.dat[p,2]+1):dim(proj.dat)[2]] <- "P"} # end if
+  } # end p loop
+} # end if
 
 # do any newly susceptible individuals post-recovery become re-exposed?
 proj.dat2 <- proj.dat[endR.before[,1],]
@@ -356,3 +362,8 @@ proj.tmp4 <- ifelse(proj.dat == "R", 1, 0)
 TnR <- apply(proj.tmp4, 2, sum) / pop.size
 plot(1:(days.proj+1), TnR, type="l", xlab="days", ylab="proportion recovered")
 par(mfrow=c(1,1))
+
+# final disease-state frequencies
+dis.freq.final <- table(proj.dat[,dim(proj.dat)[2]])/pop.size
+dis.freq.final # final disease frequencies at end of total projection interval
+#plot(dis.freq.final, ylab="proportion", xlab="disease state")
