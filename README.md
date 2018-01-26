@@ -16,22 +16,18 @@ Meetings & Activities
 RCN Synthesis Meeting, White Oak Conservation, Yulee, Florida, USA (15-19 January 2018)
 
 Participants & Partners
-Participants: 
+•	Corey Bradshaw (Flinders University) 
 •	Robert Lacy (Chicago Zoological Society)
 •	Phil Miller (Species Survival Commission: Species Planning Specialist Group)
 •	JP Pollak (University of Cornell)
 •	Ana Davidson (Colorado State University)
 •	Nadia Ali (University of Chicago)
 •	Loren Cassin Sackett (University of South Florida)
-
-Partners:
 •	Taylor Callicrate (Chicago Zoological Society; Species Conservation Toolkit Initiative)
+•	Nadia Ali (University of Chicago)
+•	Barry Brook (University of Tasmania)
 
-Papers & Other Products
-Forthcoming
 
-Proposals & New Collaborations
-NSF Infrastructure; ARC LIEF Grant (potentials)
-
-Students Involved
-Nadia Ali
+Corey J. A. Bradshaw
+Flinders University
+January 2018
