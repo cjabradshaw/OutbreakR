@@ -36,7 +36,7 @@
 rm(list=ls(all=TRUE))
 
 # source functions
-setwd("~/Documents/Papers/Disease/OutbreakR/analysis/functions")
+setwd("~/...") # where following functions can be found
 source("age.disL.r") 
 source("disParams.r") 
 source("indChar.r")
@@ -99,25 +99,3 @@ init.dat <- indChar(a=age.prop, as=age.classes, s=sex.ratio, d=init.dis.prop, ds
 # project first outbreak run
 OutbreakR.list <- OutbreakR.init(initdat=init.dat, disparams=displist, days=days.proj, n=pop.size)
 
-
-#################################################
-# simple demography set by age/sex/disease state
-surv.vec <- c(0.3,0.5,0.8,0.95,rep(0.97,(18-4))) # age-specific survival vector
-pbreed.vec <- c(0,0,0,0.2,0.5,0.8,rep(0.95,(18.6))) # age-specific proportion breeding vector
-fert.vec <- c(0,0,0,rep(1,(18-3))) # female fertilty (daughters
-
-surv.dis.mod <- c(1,1,1,0.8,1) # disease state modifier of survival vector (P, S, E, I, R)
-fert.dis.mod <- c(1,1,1,0.9,1) # disease state modifier of fertility vector (P, S, E, I, R)
-dis.mod.dat <- data.frame(surv.dis.mod, fert.dis.mod)
-colnames(dis.mod.dat) <- c("survmod", "fertmod")
-rownames(dis.mod.dat) <- disease.states
-
-# set new matrix of individuals taken from initial OutbreakR projection
-for (j in 1:length(age.classes)) {
-  age.tmp <- subset(OutbreakR.list[[1]], age==age.classes[j])
-  
-  for (i in 1:dim(OutbreakR.list[[1]])[1]) {
-    age.tmp[i,]$end.dis
-    
-  } # end i loop
-} # end j loop
