@@ -25,7 +25,7 @@ Nadia Ali (University of Chicago),
 Loren Cassin Sackett (University of South Florida), 
 Taylor Callicrate (Chicago Zoological Society; Species Conservation Toolkit Initiative), 
 Nadia Ali (University of Chicago), 
-Barry Brook (University of Tasmania), 
+Barry Brook (University of Tasmania)
 
 
 Corey J. A. Bradshaw, 
